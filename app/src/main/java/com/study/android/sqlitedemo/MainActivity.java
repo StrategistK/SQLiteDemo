@@ -17,6 +17,7 @@ public class MainActivity extends AppCompatActivity {
     private Button mUpdateData;
     private Button mDeleteData;
     private Button mQueryData;
+    private Button mReplaceData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +102,34 @@ public class MainActivity extends AppCompatActivity {
                     }while (cursor.moveToNext());
                 }
                 cursor.close();
+            }
+        });
+
+        mReplaceData = (Button)findViewById(R.id.replace_data);
+        mReplaceData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SQLiteDatabase db = mMySQLiteOpenHelper.getWritableDatabase();
+//                开启事务
+                db.beginTransaction();
+
+                try {
+                    db.delete("Book", null,null);
+                    if (true) {
+                        throw new NullPointerException();
+                    }
+                    ContentValues values = new ContentValues();
+                    values.put("name","Game of Thrones");
+                    values.put("author","George Martin");
+                    values.put("pages",720);
+                    values.put("price",22.85);
+                    db.insert("Book",null,null);
+                    db.setTransactionSuccessful();
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                } finally {
+                    db.endTransaction();
+                }
             }
         });
     }
